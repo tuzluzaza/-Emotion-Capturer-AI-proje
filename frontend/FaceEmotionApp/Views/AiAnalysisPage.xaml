@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FaceEmotionApp.ViewModels"
+             xmlns:converters="clr-namespace:FaceEmotionApp.Converters"
+             x:Class="FaceEmotionApp.Views.AiAnalysisPage"
+             BackgroundColor="#0F1923"
+             Title="AI Analizi">
+
+    <ContentPage.Resources>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    </ContentPage.Resources>
+
+    <ContentPage.BindingContext>
+        <viewmodels:AiAnalysisViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- BAŞLIK -->
+        <Frame Grid.Row="0" BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="24,40,24,16">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Label Grid.Column="0" Text="🤖" FontSize="28" VerticalOptions="Center"/>
+                <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0">
+                    <Label Text="AI Log Analizi" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Gemini ile sistem loglarını yorumla" FontSize="12" TextColor="#8899AA"/>
+                </VerticalStackLayout>
+                <Button Grid.Column="2" Text="◀" FontSize="18"
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="Transparent" TextColor="#00A8FF"/>
+            </Grid>
+        </Frame>
+
+        <!-- İÇERİK -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="16" Padding="16">
+
+                <!-- BİLGİ KARTI -->
+                <Frame BackgroundColor="#0D2040" BorderColor="#2563EB" CornerRadius="16" Padding="20">
+                    <VerticalStackLayout Spacing="10">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="ℹ️" FontSize="18"/>
+                            <Label Text="Nasıl Çalışır?" FontSize="15" FontAttributes="Bold"
+                                   TextColor="White" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label TextColor="#8899AA" FontSize="13" LineHeight="1.5">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Sistem loglarınız Gemini 1.5 Flash modeline gönderilir ve şu konularda analiz yapılır:&#10;"/>
+                                    <Span Text="• " TextColor="#60A5FA"/>
+                                    <Span Text="Güvenlik durumu ve şüpheli girişler&#10;" TextColor="#8899AA"/>
+                                    <Span Text="• " TextColor="#60A5FA"/>
+                                    <Span Text="Duygu tespiti başarısı&#10;" TextColor="#8899AA"/>
+                                    <Span Text="• " TextColor="#60A5FA"/>
+                                    <Span Text="Oda erişim örüntüleri&#10;" TextColor="#8899AA"/>
+                                    <Span Text="• " TextColor="#60A5FA"/>
+                                    <Span Text="Güvenlik önerileri" TextColor="#8899AA"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ANALİZ BUTONU -->
+                <Button Text="🤖  Logları Analiz Et"
+                        Command="{Binding AnalyzeCommand}"
+                        BackgroundColor="#2563EB" TextColor="White"
+                        CornerRadius="16" HeightRequest="56"
+                        FontAttributes="Bold" FontSize="16"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+
+
+                <!-- YÜKLEME -->
+                <VerticalStackLayout IsVisible="{Binding IsBusy}" HorizontalOptions="Center" Spacing="16" Margin="0,20">
+                    <ActivityIndicator IsRunning="True" Color="#2563EB" WidthRequest="48" HeightRequest="48"/>
+                    <Label Text="Gemini logları analiz ediyor..." TextColor="#8899AA"
+                           HorizontalOptions="Center" FontSize="14"/>
+                    <Label Text="Bu işlem 15-30 saniye sürebilir." TextColor="#445566"
+                           HorizontalOptions="Center" FontSize="12"/>
+                </VerticalStackLayout>
+
+                <!-- HATA -->
+                <Frame IsVisible="{Binding HasError}" BackgroundColor="#1A0A0A"
+                       BorderColor="#E74C3C" CornerRadius="14" Padding="16">
+                    <VerticalStackLayout Spacing="8">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="❌" FontSize="18"/>
+                            <Label Text="Hata" TextColor="#E74C3C" FontAttributes="Bold"
+                                   FontSize="15" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Text="{Binding ErrorMessage}" TextColor="#FF6666" FontSize="13"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ANALİZ SONUCU -->
+                <VerticalStackLayout IsVisible="{Binding HasResult}" Spacing="12">
+
+                    <!-- İstatistik banner -->
+                    <Frame BackgroundColor="#0D2040" BorderColor="#2563EB" CornerRadius="12" Padding="16">
+                        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                            <Label Text="📊" FontSize="20"/>
+                            <Label Text="{Binding LogCountText}" TextColor="#60A5FA"
+                                   FontAttributes="Bold" FontSize="14" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+
+                    <!-- Analiz metni -->
+                    <Frame BackgroundColor="#1A2533" BorderColor="#1E3A5F" CornerRadius="16" Padding="20">
+                        <VerticalStackLayout Spacing="8">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="🤖" FontSize="18"/>
+                                <Label Text="Gemini Analiz Raporu" FontSize="15" FontAttributes="Bold"
+                                       TextColor="White" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                            <BoxView HeightRequest="1" Color="#1E3A5F" Margin="0,4"/>
+                            <Label Text="{Binding AnalysisText}"
+                                   TextColor="#D0E4FF" FontSize="13" LineHeight="1.6"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- ALT BOŞLUK -->
+                <BoxView HeightRequest="20" Color="Transparent"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ALT BAR -->
+        <Frame Grid.Row="2" BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="16,10">
+            <Button Text="◀  Yönetim Paneline Dön"
+                    Command="{Binding GoBackCommand}"
+                    BackgroundColor="#2C3E50" TextColor="#8899AA"
+                    CornerRadius="12" HeightRequest="46"/>
+        </Frame>
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,4 @@
+Müdür Odası|angry
+Muhasebe Odası|neutral
+Çalışan Odası|happy
+toplantı odası|happy

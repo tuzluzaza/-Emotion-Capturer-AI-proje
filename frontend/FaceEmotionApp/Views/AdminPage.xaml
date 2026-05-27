@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FaceEmotionApp.ViewModels"
+             xmlns:converters="clr-namespace:FaceEmotionApp.Converters"
+             x:Class="FaceEmotionApp.Views.AdminPage"
+             BackgroundColor="#0F1923"
+             Title="Yönetim Paneli">
+
+    <ContentPage.Resources>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    </ContentPage.Resources>
+
+    <ContentPage.BindingContext>
+        <viewmodels:AdminViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- BAŞLIK -->
+        <Frame Grid.Row="0" BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="24,40,24,16">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Label Grid.Column="0" Text="⚙️" FontSize="28" VerticalOptions="Center"/>
+                <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0">
+                    <Label Text="Yönetim Paneli" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Oda ve Rol Yönetimi" FontSize="12" TextColor="#8899AA"/>
+                </VerticalStackLayout>
+                <Button Grid.Column="2" Text="◀" FontSize="18"
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="Transparent" TextColor="#00A8FF"/>
+            </Grid>
+        </Frame>
+
+        <!-- İÇERİK -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20" Padding="16,16,16,16">
+
+                <!-- DURUM MESAJI -->
+                <Frame IsVisible="{Binding HasStatus}"
+                       CornerRadius="12" Padding="14" BorderColor="Transparent">
+                    <Frame.Triggers>
+                        <DataTrigger TargetType="Frame" Binding="{Binding IsSuccess}" Value="True">
+                            <Setter Property="BackgroundColor" Value="#1A3A1A"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Frame" Binding="{Binding IsSuccess}" Value="False">
+                            <Setter Property="BackgroundColor" Value="#3A1A1A"/>
+                        </DataTrigger>
+                    </Frame.Triggers>
+                    <Label Text="{Binding StatusMessage}" HorizontalTextAlignment="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsSuccess}" Value="True">
+                                <Setter Property="TextColor" Value="#2ECC71"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsSuccess}" Value="False">
+                                <Setter Property="TextColor" Value="#E74C3C"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Frame>
+
+                <!-- ========== ODALAR ========== -->
+                <Frame BackgroundColor="#1A2533" BorderColor="#1E3A5F" CornerRadius="16" Padding="20">
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label Text="🚪  Odalar" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                        <BoxView HeightRequest="1" Color="#1E3A5F"/>
+
+                        <!-- Yeni Oda Ekle -->
+                        <Label Text="Yeni Oda Ekle" TextColor="#8899AA" FontSize="12"/>
+                        <Entry Placeholder="Oda adı (örn: Toplantı Odası)"
+                               Text="{Binding NewRoomName}"
+                               BackgroundColor="#0D1B2A" TextColor="White"
+                               PlaceholderColor="#445566" HeightRequest="48"/>
+
+                        <Label Text="Gerekli Duygu" TextColor="#8899AA" FontSize="12"/>
+                        <Picker Title="Duygu seçin..."
+                                ItemsSource="{Binding AvailableEmotions}"
+                                SelectedItem="{Binding NewRoomEmotion}"
+                                BackgroundColor="#0D1B2A" TextColor="White"
+                                TitleColor="#445566" HeightRequest="48"/>
+
+                        <Button Text="➕  Oda Ekle"
+                                Command="{Binding AddRoomCommand}"
+                                BackgroundColor="#27AE60" TextColor="White"
+                                CornerRadius="12" HeightRequest="48"
+                                FontAttributes="Bold"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+
+                        <BoxView HeightRequest="1" Color="#1E3A5F" Margin="0,4"/>
+                        <Label Text="Mevcut Odalar" TextColor="#8899AA" FontSize="12"/>
+
+                        <!-- Oda Listesi -->
+                        <CollectionView ItemsSource="{Binding Rooms}" SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" Padding="0,6">
+                                         <Grid.GestureRecognizers>
+                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminViewModel}}, Path=SelectRoomCommand}"
+                                                                 CommandParameter="{Binding .}"/>
+                                         </Grid.GestureRecognizers>
+                                        <Label Grid.Column="0" Text="{Binding EmotionEmoji}" FontSize="22" VerticalOptions="Center"/>
+                                        <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" VerticalOptions="Center">
+                                            <Label Text="{Binding RoomName}" TextColor="White" FontSize="14"/>
+                                            <Label Text="{Binding RequiredEmotion}" TextColor="#8899AA" FontSize="11"/>
+                                        </VerticalStackLayout>
+                                        <Button Grid.Column="2" Text="🗑"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminViewModel}}, Path=DeleteRoomCommand}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="Transparent" TextColor="#E74C3C"
+                                                FontSize="18" Padding="8,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ========== ROLLER ========== -->
+                <Frame BackgroundColor="#1A2533" BorderColor="#1E3A5F" CornerRadius="16" Padding="20">
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label Text="👤  Roller" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                        <BoxView HeightRequest="1" Color="#1E3A5F"/>
+
+                        <!-- Yeni Rol Ekle -->
+                        <Label Text="Yeni Rol Ekle" TextColor="#8899AA" FontSize="12"/>
+                        <Entry Placeholder="Rol adı (örn: Güvenlik)"
+                               Text="{Binding NewRoleName}"
+                               BackgroundColor="#0D1B2A" TextColor="White"
+                               PlaceholderColor="#445566" HeightRequest="48"/>
+
+                        <Button Text="➕  Rol Ekle"
+                                Command="{Binding AddRoleCommand}"
+                                BackgroundColor="#2980B9" TextColor="White"
+                                CornerRadius="12" HeightRequest="48"
+                                FontAttributes="Bold"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+
+                        <BoxView HeightRequest="1" Color="#1E3A5F" Margin="0,4"/>
+                        <Label Text="Mevcut Roller" TextColor="#8899AA" FontSize="12"/>
+
+                        <!-- Rol Listesi -->
+                        <CollectionView ItemsSource="{Binding Roles}" SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="#0D1B2A" BorderColor="#1E3A5F"
+                                           CornerRadius="10" Padding="12,10" Margin="0,4">
+                                         <Frame.GestureRecognizers>
+                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminViewModel}}, Path=SelectRoleCommand}"
+                                                                 CommandParameter="{Binding .}"/>
+                                         </Frame.GestureRecognizers>
+                                         <Grid ColumnDefinitions="*,Auto">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                                <Label Text="{Binding RoleName}"
+                                                       TextColor="White" FontAttributes="Bold" FontSize="14"/>
+                                                <Label Text="{Binding AllowedRoomsDisplay}"
+                                                       TextColor="#8899AA" FontSize="11"/>
+                                            </VerticalStackLayout>
+                                            <Button Grid.Column="1" Text="🗑"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminViewModel}}, Path=DeleteRoleCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    BackgroundColor="Transparent" TextColor="#E74C3C"
+                                                    FontSize="18" Padding="8,0"
+                                                    IsVisible="{Binding IsMudur, Converter={StaticResource InverseBoolConverter}}"/>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ========== KİŞİLER ========== -->
+                <Frame BackgroundColor="#1A2533" BorderColor="#1E3A5F" CornerRadius="16" Padding="20">
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label Text="👤  Kayıtlı Kişiler" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                        <BoxView HeightRequest="1" Color="#1E3A5F"/>
+                        <Label Text="Bir kişiye tıklayarak rolünü değiştirebilirsiniz." TextColor="#8899AA" FontSize="12"/>
+
+                        <CollectionView ItemsSource="{Binding Persons}" SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="#0D1B2A" BorderColor="#1E3A5F"
+                                           CornerRadius="10" Padding="12,10" Margin="0,4">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AdminViewModel}}, Path=SelectPersonCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Frame.GestureRecognizers>
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Label Grid.Column="0" Text="🧑" FontSize="22" VerticalOptions="Center"/>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="3" Margin="12,0,0,0" VerticalOptions="Center">
+                                                <Label Text="{Binding PersonName}" TextColor="White" FontAttributes="Bold" FontSize="14"/>
+                                                <Label Text="{Binding CurrentRole}" TextColor="#8899AA" FontSize="11"/>
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="2" Text="›" FontSize="22" TextColor="#00A8FF" VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ========== ODA İZİNLERİ DÜZENLEME (POPUP GİBİ) ========== -->
+        <ContentView Grid.Row="0" Grid.RowSpan="3" BackgroundColor="#CC000000" IsVisible="{Binding HasSelectedRole}">
+            <Frame VerticalOptions="Center" HorizontalOptions="Center" 
+                   BackgroundColor="#1A2533" BorderColor="#1E3A5F"
+                   CornerRadius="20" WidthRequest="320" Padding="24"
+                   Margin="20">
+                <VerticalStackLayout Spacing="16">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="{Binding SelectedRole.RoleName}" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                            <Label Text="Oda İzinlerini Düzenle" FontSize="12" TextColor="#8899AA"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1" Text="✕" FontSize="20"
+                                Command="{Binding ClosePermissionsCommand}"
+                                BackgroundColor="Transparent" TextColor="#8899AA" Padding="0"/>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="#1E3A5F"/>
+
+                    <ScrollView HeightRequest="300">
+                        <VerticalStackLayout Spacing="10">
+                            <CollectionView ItemsSource="{Binding RoleRoomPermissions}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                                            <Label Grid.Column="0" Text="{Binding RoomName}" 
+                                                   TextColor="White" VerticalOptions="Center"/>
+                                            <Switch Grid.Column="1" IsToggled="{Binding IsAllowed, Mode=TwoWay}"
+                                                    OnColor="#00A8FF" ThumbColor="White" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </ScrollView>
+
+                    <Button Text="✅  Kaydet ve Kapat"
+                            Command="{Binding SaveRolePermissionsCommand}"
+                            BackgroundColor="#00A8FF" TextColor="White"
+                            CornerRadius="12" HeightRequest="48" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+        </ContentView>
+
+        <!-- ========== ODA DUYGU DÜZENLEME (POPUP) ========== -->
+        <ContentView Grid.Row="0" Grid.RowSpan="3" BackgroundColor="#CC000000" IsVisible="{Binding HasSelectedRoom}">
+            <Frame VerticalOptions="Center" HorizontalOptions="Center" 
+                   BackgroundColor="#1A2533" BorderColor="#1E3A5F"
+                   CornerRadius="20" WidthRequest="320" Padding="24"
+                   Margin="20">
+                <VerticalStackLayout Spacing="16">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="{Binding SelectedRoom.RoomName}" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                            <Label Text="Gerekli Duyguyu Güncelle" FontSize="12" TextColor="#8899AA"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1" Text="✕" FontSize="20"
+                                Command="{Binding CloseRoomEditCommand}"
+                                BackgroundColor="Transparent" TextColor="#8899AA" Padding="0"/>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="#1E3A5F"/>
+
+                    <Label Text="Yeni Gerekli Duygu" TextColor="#8899AA" FontSize="12"/>
+                    <Picker Title="Duygu seçin..."
+                            ItemsSource="{Binding AvailableEmotions}"
+                            SelectedItem="{Binding SelectedRoom.RequiredEmotion, Mode=TwoWay}"
+                            BackgroundColor="#0D1B2A" TextColor="White"
+                            TitleColor="#445566" HeightRequest="48"/>
+
+                    <Button Text="✅  Duyguyu Güncelle"
+                            Command="{Binding SaveRoomEmotionCommand}"
+                            BackgroundColor="#27AE60" TextColor="White"
+                            CornerRadius="12" HeightRequest="48" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+        </ContentView>
+
+        <!-- ========== KİŞİ ROL DÜZENLEME (POPUP) ========== -->
+        <ContentView Grid.Row="0" Grid.RowSpan="3" BackgroundColor="#CC000000" IsVisible="{Binding HasSelectedPerson}">
+            <Frame VerticalOptions="Center" HorizontalOptions="Center"
+                   BackgroundColor="#1A2533" BorderColor="#1E3A5F"
+                   CornerRadius="20" WidthRequest="320" Padding="24"
+                   Margin="20">
+                <VerticalStackLayout Spacing="16">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="{Binding SelectedPerson.PersonName}" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                            <Label Text="Rolü Değiştir" FontSize="12" TextColor="#8899AA"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1" Text="✕" FontSize="20"
+                                Command="{Binding ClosePersonEditCommand}"
+                                BackgroundColor="Transparent" TextColor="#8899AA" Padding="0"/>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="#1E3A5F"/>
+
+                    <Label Text="Mevcut Rol" TextColor="#8899AA" FontSize="12"/>
+                    <Label Text="{Binding SelectedPerson.CurrentRole}"
+                           TextColor="#00A8FF" FontAttributes="Bold" FontSize="16"/>
+
+                    <Label Text="Yeni Rol" TextColor="#8899AA" FontSize="12"/>
+                    <Picker Title="Rol seçin..."
+                            ItemsSource="{Binding SelectedPerson.AvailableRoles}"
+                            SelectedItem="{Binding SelectedPerson.CurrentRole, Mode=TwoWay}"
+                            BackgroundColor="#0D1B2A" TextColor="White"
+                            TitleColor="#445566" HeightRequest="48"/>
+
+                    <Button Text="✅  Rolü Güncelle"
+                            Command="{Binding SavePersonRoleCommand}"
+                            BackgroundColor="#9B59B6" TextColor="White"
+                            CornerRadius="12" HeightRequest="48" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+        </ContentView>
+
+        <!-- ALT: YENILE + LOGLAR + AI -->
+        <Frame Grid.Row="2" BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="16,10">
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                <Button Grid.Column="0" Text="🔄  Yenile"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#2C3E50" TextColor="#8899AA"
+                        CornerRadius="12" HeightRequest="46"/>
+                <Button Grid.Column="1" Text="📋  Loglar"
+                        Command="{Binding GoToLogsCommand}"
+                        BackgroundColor="#1E3A5F" TextColor="#00A8FF"
+                        CornerRadius="12" HeightRequest="46" WidthRequest="95"/>
+                <Button Grid.Column="2" Text="🤖  AI"
+                        Command="{Binding GoToAiAnalysisCommand}"
+                        BackgroundColor="#1A1040" TextColor="#A78BFA"
+                        CornerRadius="12" HeightRequest="46" WidthRequest="80"/>
+            </Grid>
+        </Frame>
+
+    </Grid>
+</ContentPage>

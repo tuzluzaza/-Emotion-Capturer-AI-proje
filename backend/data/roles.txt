@@ -1,0 +1,4 @@
+Müdür|Müdür Odası,Muhasebe Odası,Çalışan Odası,toplantı odası
+Muhasebeci|Muhasebe Odası,Çalışan Odası,toplantı odası
+Çalışan|Muhasebe Odası,Çalışan Odası,toplantı odası
+guvenlik|Çalışan Odası,toplantı odası

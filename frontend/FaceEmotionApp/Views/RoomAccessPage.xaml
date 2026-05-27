@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FaceEmotionApp.ViewModels"
+             x:Class="FaceEmotionApp.Views.RoomAccessPage"
+             BackgroundColor="#0F1923"
+             Title="Oda Girişi">
+
+    <ContentPage.BindingContext>
+        <viewmodels:RoomAccessViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0" Padding="24,30,24,30">
+
+            <!-- ODA BİLGİSİ KARTI -->
+            <Frame BackgroundColor="#1A2533" BorderColor="#1E3A5F"
+                   CornerRadius="20" Padding="24" HasShadow="True">
+                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Label Text="🚪" FontSize="48" HorizontalOptions="Center"/>
+                    <Label Text="{Binding RoomName}"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"/>
+                    <Frame BackgroundColor="#0D2137" BorderColor="#00A8FF"
+                           CornerRadius="10" Padding="12,6" HorizontalOptions="Center">
+                        <Label Text="{Binding RequiredEmotionDisplay}"
+                               TextColor="#00A8FF" FontSize="14"
+                               HorizontalOptions="Center"/>
+                    </Frame>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- FOTOĞRAF ÇERÇEVE -->
+            <Frame BorderColor="#1E3A5F" CornerRadius="16"
+                   HeightRequest="240" WidthRequest="240"
+                   HorizontalOptions="Center"
+                   BackgroundColor="#1A2533"
+                   HasShadow="True" Padding="0"
+                   IsClippedToBounds="True"
+                   Margin="0,20,0,0">
+                <Grid>
+                    <Label Text="📷" FontSize="44"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}" />
+                    <Image Source="{Binding ImagePath}"
+                           Aspect="AspectFill"
+                           IsVisible="{Binding HasImage}" />
+                </Grid>
+            </Frame>
+
+            <!-- LOADING -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="#00A8FF"
+                               Margin="0,16,0,0"/>
+
+            <!-- GİRİŞ BUTONU -->
+            <Button Text="📸  Yüzünüzü Okutun"
+                    Command="{Binding CaptureAndCheckCommand}"
+                    BackgroundColor="#00A8FF" TextColor="White"
+                    CornerRadius="16" HeightRequest="56"
+                    FontAttributes="Bold" FontSize="16"
+                    Margin="0,20,0,0"
+                    IsVisible="{Binding ShowResult, Converter={StaticResource InverseBoolConverter}}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+
+            <!-- SONUÇ PANELİ -->
+            <Frame IsVisible="{Binding ShowResult}"
+                   CornerRadius="20" Padding="24"
+                   HasShadow="True" Margin="0,20,0,0"
+                   BorderColor="Transparent">
+                <Frame.Triggers>
+                    <DataTrigger TargetType="Frame" Binding="{Binding AccessGranted}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#1A3A1A"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Frame" Binding="{Binding AccessGranted}" Value="False">
+                        <Setter Property="BackgroundColor" Value="#3A1A1A"/>
+                    </DataTrigger>
+                </Frame.Triggers>
+
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{Binding ResultTitle}"
+                           FontSize="20" FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding AccessGranted}" Value="True">
+                                <Setter Property="TextColor" Value="#2ECC71"/>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding AccessGranted}" Value="False">
+                                <Setter Property="TextColor" Value="#E74C3C"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+
+                    <BoxView HeightRequest="1" Color="#333" Margin="0,4"/>
+
+                    <Label Text="{Binding PersonInfo}"
+                           TextColor="#8899AA" FontSize="13"
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding PersonInfo, Converter={StaticResource StringNotEmptyConverter}}"/>
+
+                    <Label Text="{Binding EmotionInfo}"
+                           TextColor="#8899AA" FontSize="13"
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding EmotionInfo, Converter={StaticResource StringNotEmptyConverter}}"/>
+
+                    <Label Text="{Binding ResultMessage}"
+                           TextColor="White" FontSize="14"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center"
+                           Margin="0,8,0,0"/>
+
+                    <!-- BUTONLAR -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,12,0,0">
+                        <Button Grid.Column="0" Text="🔄 Tekrar Dene"
+                                Command="{Binding TryAgainCommand}"
+                                BackgroundColor="#2C3E50" TextColor="White"
+                                CornerRadius="12" HeightRequest="48"/>
+                        <Button Grid.Column="1" Text="◀  Geri Dön"
+                                Command="{Binding GoBackToDashboardCommand}"
+                                BackgroundColor="#1E3A5F" TextColor="#00A8FF"
+                                CornerRadius="12" HeightRequest="48"
+                                FontAttributes="Bold"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- HENÜZ SONUÇ YOK: GERİ DÖN BUTONU -->
+            <Button Text="◀  Panele Dön"
+                    Command="{Binding GoBackToDashboardCommand}"
+                    BackgroundColor="Transparent" TextColor="#445566"
+                    Margin="0,16,0,0"
+                    IsVisible="{Binding ShowResult, Converter={StaticResource InverseBoolConverter}}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

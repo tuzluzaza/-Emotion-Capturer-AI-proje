@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FaceEmotionApp.ViewModels"
+             x:Class="FaceEmotionApp.Views.DashboardPage"
+             BackgroundColor="#0F1923"
+             Title="Ana Panel">
+
+    <ContentPage.BindingContext>
+        <viewmodels:DashboardViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- ÜSTTE KULLANICI BİLGİSİ -->
+        <Frame Grid.Row="0" BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="24,40,24,20" HasShadow="True">
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="{Binding WelcomeText}"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="White"/>
+                    <Frame BackgroundColor="#0D2137" BorderColor="#00A8FF"
+                           CornerRadius="8" Padding="10,4" HorizontalOptions="Start">
+                        <Label Text="{Binding RoleText}"
+                               TextColor="#00A8FF" FontSize="13"/>
+                    </Frame>
+                </VerticalStackLayout>
+                <Button Grid.Column="1"
+                        Text="🚪"
+                        FontSize="22"
+                        Command="{Binding LogoutCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="#CC4444"
+                        ToolTipProperties.Text="Çıkış Yap"/>
+            </Grid>
+        </Frame>
+
+        <!-- BÖLÜM BAŞLIĞI -->
+        <Label Grid.Row="1"
+               Text="Erişebileceğiniz Odalar"
+               FontSize="16" FontAttributes="Bold"
+               TextColor="#8899AA"
+               Margin="24,20,24,8"/>
+
+        <!-- ODA KARTLARI -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Spacing="0" Padding="16,0,16,16">
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="#00A8FF"
+                                   Margin="0,30,0,0"/>
+
+                <CollectionView ItemsSource="{Binding Rooms}"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#1A2533"
+                                   BorderColor="#1E3A5F"
+                                   CornerRadius="16"
+                                   Padding="20,16"
+                                   HasShadow="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DashboardViewModel}}, Path=SelectRoomCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <!-- Emoji -->
+                                    <Frame Grid.Column="0"
+                                           BackgroundColor="#0D2137"
+                                           CornerRadius="14"
+                                           Padding="12"
+                                           BorderColor="Transparent"
+                                           WidthRequest="60" HeightRequest="60">
+                                        <Label Text="{Binding EmotionEmoji}"
+                                               FontSize="26"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"/>
+                                    </Frame>
+                                    <!-- Bilgi -->
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4" Margin="16,0,0,0" VerticalOptions="Center">
+                                        <Label Text="{Binding RoomName}"
+                                               FontSize="16" FontAttributes="Bold"
+                                               TextColor="White"/>
+                                        <Label Text="{Binding DisplayText}"
+                                               FontSize="12"
+                                               TextColor="#8899AA"/>
+                                    </VerticalStackLayout>
+                                    <!-- Ok -->
+                                    <Label Grid.Column="2" Text="›"
+                                           FontSize="28" TextColor="#00A8FF"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ALT: BUTONLAR -->
+        <Frame Grid.Row="3"
+               BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="16,12">
+            <VerticalStackLayout Spacing="8">
+                <!-- Müdür'e özel: Yönetim Paneli butonu -->
+                <Button Text="⚙️  Yönetim Paneli"
+                        Command="{Binding GoToAdminCommand}"
+                        BackgroundColor="#1E3A5F" TextColor="#00A8FF"
+                        CornerRadius="14" HeightRequest="50"
+                        FontSize="14" FontAttributes="Bold"
+                        IsVisible="{Binding IsAdmin}"/>
+                <Button Text="🎭  Bağımsız Duygu Analizi"
+                        Command="{Binding GoToEmotionAnalysisCommand}"
+                        BackgroundColor="#2C3E50" TextColor="#8899AA"
+                        CornerRadius="14" HeightRequest="50"
+                        FontSize="14"/>
+            </VerticalStackLayout>
+        </Frame>
+
+    </Grid>
+</ContentPage>

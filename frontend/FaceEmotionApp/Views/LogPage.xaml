@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FaceEmotionApp.ViewModels"
+             x:Class="FaceEmotionApp.Views.LogPage"
+             BackgroundColor="#0F1923"
+             Title="Erişim Logları">
+
+    <ContentPage.BindingContext>
+        <viewmodels:LogViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- BAŞLIK -->
+        <Frame Grid.Row="0" BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="24,40,24,16">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Label Grid.Column="0" Text="📋" FontSize="28" VerticalOptions="Center"/>
+                <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0">
+                    <Label Text="Erişim Logları" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Sistem giriş kayıtları" FontSize="12" TextColor="#8899AA"/>
+                </VerticalStackLayout>
+                <Button Grid.Column="2" Text="◀" FontSize="18"
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="Transparent" TextColor="#00A8FF"/>
+            </Grid>
+        </Frame>
+
+        <!-- LOG LİSTESİ -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="8" Padding="16,16,16,8">
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                                   Color="#00A8FF" Margin="0,20,0,0"/>
+
+                <!-- Boş durum -->
+                <VerticalStackLayout IsVisible="{Binding IsEmpty}" HorizontalOptions="Center"
+                                     VerticalOptions="Center" Spacing="12" Margin="0,60,0,0">
+                    <Label Text="📭" FontSize="48" HorizontalOptions="Center"/>
+                    <Label Text="Henüz log kaydı yok" TextColor="#8899AA"
+                           FontSize="16" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <!-- Log kartları -->
+                <CollectionView ItemsSource="{Binding Logs}" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#1A2533" BorderColor="#1E3A5F"
+                                   CornerRadius="12" Padding="14,12" Margin="0,4">
+                                <VerticalStackLayout Spacing="6">
+                                    <!-- Üst satır: emoji + sonuç + zaman -->
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Label Grid.Column="0" Text="{Binding ResultEmoji}"
+                                               FontSize="18" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1" Text="{Binding Result}"
+                                               Margin="8,0,0,0" FontAttributes="Bold" FontSize="13"
+                                               VerticalOptions="Center">
+                                            <Label.TextColor>
+                                                <Binding Path="ResultColor"/>
+                                            </Label.TextColor>
+                                        </Label>
+                                        <Label Grid.Column="2" Text="{Binding Timestamp}"
+                                               TextColor="#556677" FontSize="10" VerticalOptions="Center"/>
+                                    </Grid>
+                                    <!-- Alt satır: kişi, oda, detay -->
+                                    <Grid ColumnDefinitions="*,*">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                            <Label Text="Kişi" TextColor="#445566" FontSize="10"/>
+                                            <Label Text="{Binding Person}" TextColor="White" FontSize="12"/>
+                                        </VerticalStackLayout>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                            <Label Text="Oda" TextColor="#445566" FontSize="10"/>
+                                            <Label Text="{Binding Room}" TextColor="White" FontSize="12"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                    <Label Text="{Binding Detail}" TextColor="#8899AA" FontSize="11"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ALT BUTONLAR -->
+        <Frame Grid.Row="2" BackgroundColor="#1A2533" BorderColor="Transparent"
+               CornerRadius="0" Padding="16,10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="🔄  Yenile"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#2C3E50" TextColor="#8899AA"
+                        CornerRadius="12" HeightRequest="46"/>
+                <Button Grid.Column="1" Text="🗑  Temizle"
+                        Command="{Binding ClearLogsCommand}"
+                        BackgroundColor="#3A1A1A" TextColor="#E74C3C"
+                        CornerRadius="12" HeightRequest="46" WidthRequest="110"/>
+            </Grid>
+        </Frame>
+
+    </Grid>
+</ContentPage>

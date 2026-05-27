@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FaceEmotionApp.ViewModels"
+             x:Class="FaceEmotionApp.Views.MainPage"
+             BackgroundColor="#F5F5F5">
+
+    <!-- ViewModel'i XAML tarafında bağlamak (BindingContext) için -->
+    <ContentPage.BindingContext>
+        <viewmodels:MainViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+            <!-- Uygulama Başlığı -->
+            <Label Text="Yüz Tanıma ve Duygu Analizi"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="#333333" />
+
+            <!-- Çekilen Fotoğrafı Gösterecek Kısım -->
+            <Frame BorderColor="LightGray"
+                   CornerRadius="15"
+                   HeightRequest="300"
+                   WidthRequest="300"
+                   HorizontalOptions="Center"
+                   HasShadow="True"
+                   Padding="0"
+                   IsClippedToBounds="True">
+                
+                <Grid>
+                    <!-- Varsayılan İkon / Yazı -->
+                    <Label Text="Fotoğraf Çekiniz"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="Gray" />
+                    
+                    <!-- Çekilen Fotoğraf -->
+                    <Image Source="{Binding ImagePath}"
+                           Aspect="AspectFill"
+                           IsVisible="{Binding ImagePath, Converter={x:Static String.IsNullOrEmpty}, ConverterParameter=False}" />
+                </Grid>
+            </Frame>
+
+            <!-- Kamera Açma Butonu -->
+            <Button Text="Kamerayı Aç ve Çek"
+                    Command="{Binding TakePhotoCommand}"
+                    BackgroundColor="#0078D7"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    FontAttributes="Bold"
+                    Margin="0, 10, 0, 0" />
+
+            <!-- Yükleme Göstergesi (ActivityIndicator) -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="#0078D7"
+                               HorizontalOptions="Center" />
+
+            <!-- Sonuçları Göstereceğimiz Kart (Frame) -->
+            <Frame BackgroundColor="White"
+                   CornerRadius="15"
+                   HasShadow="True"
+                   Padding="20"
+                   Margin="0, 10, 0, 0">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Analiz Sonucu"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#333333"
+                           HorizontalOptions="Center" />
+
+                    <!-- Kişi Adı -->
+                    <Grid ColumnDefinitions="*, *">
+                        <Label Grid.Column="0" Text="Kişi:" FontAttributes="Bold" TextColor="Gray" />
+                        <Label Grid.Column="1" Text="{Binding PersonName}" TextColor="#0078D7" FontAttributes="Bold" HorizontalOptions="End" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="#EEEEEE" />
+
+                    <!-- Duygu -->
+                    <Grid ColumnDefinitions="*, *">
+                        <Label Grid.Column="0" Text="Duygu:" FontAttributes="Bold" TextColor="Gray" />
+                        <Label Grid.Column="1" Text="{Binding DominantEmotion}" TextColor="#E81123" FontAttributes="Bold" HorizontalOptions="End" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

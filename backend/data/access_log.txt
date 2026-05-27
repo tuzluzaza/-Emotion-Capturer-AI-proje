@@ -1,0 +1,13 @@
+2026-05-10 23:47:17 | Kişi: berat yildiz | Etkinlik: Giriş Yapıldı | Oda: Çalışan Odası | Sonuç: Onaylandı | Detay: Rol: Muhasebeci, Duygu: happy
+2026-05-10 23:47:40 | Kişi: berat yildiz | Etkinlik: Giriş Denemesi | Oda: Çalışan Odası | Sonuç: Reddedildi | Detay: Duygu uyuşmadı (tespit: neutral, gerekli: happy)
+2026-05-10 23:48:25 | Kişi: hilal | Etkinlik: Rol Güncellendi | Oda: - | Sonuç: Başarılı | Detay: Muhasebeci → Çalışan
+2026-05-11 13:00:37 | Kişi: osman mert | Etkinlik: Rol Güncellendi | Oda: - | Sonuç: Başarılı | Detay: Muhasebeci → guvenlik
+2026-05-11 13:01:21 | Kişi: - | Etkinlik: Giriş Denemesi | Oda: toplantı odası | Sonuç: Bilinmeyen Kişi | Detay: Yüz eşleşmedi
+2026-05-11 13:01:33 | Kişi: 1758305169844 | Etkinlik: Giriş Yapıldı | Oda: toplantı odası | Sonuç: Onaylandı | Detay: Rol: Çalışan, Duygu: happy
+2026-05-11 13:01:52 | Kişi: 1758305169844 | Etkinlik: Giriş Denemesi | Oda: Çalışan Odası | Sonuç: Reddedildi | Detay: Duygu uyuşmadı (tespit: neutral, gerekli: happy)
+2026-05-11 13:03:36 | Kişi: ahmet | Etkinlik: Rol Güncellendi | Oda: - | Sonuç: Başarılı | Detay: Müdür → guvenlik
+2026-05-11 13:03:44 | Kişi: 1758305169844 | Etkinlik: Rol Güncellendi | Oda: - | Sonuç: Başarılı | Detay: Çalışan → Müdür
+2026-05-11 18:19:09 | Kişi: 1758305169844 | Etkinlik: Giriş Yapıldı | Oda: Muhasebe Odası | Sonuç: Onaylandı | Detay: Rol: Müdür, Duygu: neutral
+2026-05-12 00:03:51 | Kişi: 1758305169844 | Etkinlik: Giriş Denemesi | Oda: toplantı odası | Sonuç: Reddedildi | Detay: Duygu uyuşmadı (tespit: neutral, gerekli: happy)
+2026-05-12 00:04:03 | Kişi: 1758305169844 | Etkinlik: Giriş Yapıldı | Oda: toplantı odası | Sonuç: Onaylandı | Detay: Rol: Müdür, Duygu: happy
+2026-05-12 00:04:58 | Kişi: umut arda | Etkinlik: Rol Güncellendi | Oda: - | Sonuç: Başarılı | Detay: Çalışan → guvenlik

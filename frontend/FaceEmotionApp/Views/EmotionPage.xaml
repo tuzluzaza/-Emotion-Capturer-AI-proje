@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FaceEmotionApp.ViewModels"
+             x:Class="FaceEmotionApp.Views.EmotionPage"
+             BackgroundColor="#0F1923"
+             Title="Duygu Analizi">
+
+    <ContentPage.BindingContext>
+        <viewmodels:EmotionViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="24,30,24,30">
+
+            <Label Text="🎭 Duygu Analizi"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="White" HorizontalOptions="Center"/>
+            <Label Text="Anlık duygu durumunuzu analiz edin"
+                   FontSize="13" TextColor="#8899AA"
+                   HorizontalOptions="Center"/>
+
+            <!-- FOTOĞRAF -->
+            <Frame BorderColor="#1E3A5F" CornerRadius="16"
+                   HeightRequest="260" WidthRequest="260"
+                   HorizontalOptions="Center"
+                   BackgroundColor="#1A2533"
+                   Padding="0" IsClippedToBounds="True">
+                <Grid>
+                    <Label Text="📷" FontSize="44"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}"/>
+                    <Image Source="{Binding ImagePath}"
+                           Aspect="AspectFill"
+                           IsVisible="{Binding HasImage}"/>
+                </Grid>
+            </Frame>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="#00A8FF"/>
+
+            <Button Text="📸  Fotoğraf Çek ve Analiz Et"
+                    Command="{Binding AnalyzeCommand}"
+                    BackgroundColor="#17A2B8" TextColor="White"
+                    CornerRadius="16" HeightRequest="56"
+                    FontAttributes="Bold" FontSize="16"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
+
+            <!-- SONUÇ -->
+            <Frame BackgroundColor="#1A2533" BorderColor="#1E3A5F"
+                   CornerRadius="16" Padding="20"
+                   IsVisible="{Binding ShowResult}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Analiz Sonucu" FontSize="16" FontAttributes="Bold"
+                           TextColor="White" HorizontalOptions="Center"/>
+                    <BoxView HeightRequest="1" Color="#1E3A5F"/>
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Grid.Column="0" Text="Kişi:" TextColor="#8899AA" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" Text="{Binding PersonName}"
+                               TextColor="#00A8FF" FontAttributes="Bold" HorizontalOptions="End"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="#1E3A5F"/>
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Grid.Column="0" Text="Duygu:" TextColor="#8899AA" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" Text="{Binding DominantEmotion}"
+                               TextColor="#2ECC71" FontAttributes="Bold" HorizontalOptions="End"/>
+                    </Grid>
+                    <Button Text="🔄 Yeni Analiz"
+                            Command="{Binding ResetAnalysisCommand}"
+                            BackgroundColor="#2C3E50" TextColor="White"
+                            CornerRadius="12" HeightRequest="46" Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="◀  Panele Dön"
+                    Command="{Binding GoBackCommand}"
+                    BackgroundColor="Transparent" TextColor="#445566"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

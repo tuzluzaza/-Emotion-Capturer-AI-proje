@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="FaceEmotionApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:FaceEmotionApp"
+    xmlns:views="clr-namespace:FaceEmotionApp.Views"
+    Shell.NavBarIsVisible="False"
+    Title="FaceEmotionApp">
+
+    <!-- Giriş Sayfası -->
+    <ShellContent
+        Title="Giriş"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+
+    <!-- Ana Panel (Oturum açıldıktan sonra) -->
+    <ShellContent
+        Title="Panel"
+        ContentTemplate="{DataTemplate views:DashboardPage}"
+        Route="DashboardPage" />
+
+    <!-- Oda Erişim Kontrolü -->
+    <ShellContent
+        Title="Oda Girişi"
+        ContentTemplate="{DataTemplate views:RoomAccessPage}"
+        Route="RoomAccessPage" />
+
+    <!-- Bağımsız Duygu Analizi -->
+    <ShellContent
+        Title="Duygu Analizi"
+        ContentTemplate="{DataTemplate views:EmotionPage}"
+        Route="EmotionPage" />
+
+    <!-- Yönetim Paneli (sadece Müdür) -->
+    <ShellContent
+        Title="Yönetim"
+        ContentTemplate="{DataTemplate views:AdminPage}"
+        Route="AdminPage" />
+
+    <!-- Erişim Logları -->
+    <ShellContent
+        Title="Loglar"
+        ContentTemplate="{DataTemplate views:LogPage}"
+        Route="LogPage" />
+
+    <!-- AI Log Analizi -->
+    <ShellContent
+        Title="AI Analizi"
+        ContentTemplate="{DataTemplate views:AiAnalysisPage}"
+        Route="AiAnalysisPage" />
+
+</Shell>
