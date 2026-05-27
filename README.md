@@ -1,5 +1,5 @@
 ====================================================================
-                 (Emotion Capturer AI)
+                (Emotion Capturer AI)
 YAPAY ZEKA DESTEKLİ BİNA ERİŞİM VE DUYGU KONTROL SİSTEMİ 
 ====================================================================
 
